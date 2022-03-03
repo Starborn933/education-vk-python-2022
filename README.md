@@ -1,2 +1,2 @@
-# education-vk-python-2022
-Test Automation on Python Course (VK education)
+# Автоматизированное тестирование
+Репозиторий курса "Автоматизированное тестирование" (VK образование).
