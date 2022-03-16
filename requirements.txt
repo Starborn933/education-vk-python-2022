@@ -1,0 +1,11 @@
+allure-pytest==2.8.32
+allure-python-commons==2.8.32
+attrs==21.2.0
+execnet==1.9.0
+importlib-metadata==4.8.1
+pytest-xdist==2.4.0
+selenium==4.0.0a5
+toml==0.10.2
+typing-extensions==3.10.0.2
+webdriver-manager==3.3.0
+zipp==3.6.0
