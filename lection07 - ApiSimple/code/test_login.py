@@ -84,3 +84,13 @@ class TestLK(BaseCase):
 
     def test_lk2(self):
         time.sleep(3)
+
+
+class TestApi:
+    @pytest.fixture(scope='class', autouse=True)
+    def setup(self, api_client):
+        api_client.post_login()
+
+    def test(self, api_client):
+        expected_url = api_client.session.get(url='https://education.vk.company/profile/k.soldatov/').url
+        assert expected_url == 'https://education.vk.company/profile/k.soldatov/'
