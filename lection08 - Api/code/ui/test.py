@@ -6,7 +6,7 @@ import time
 
 from selenium.webdriver import ActionChains
 
-from base import BaseCase
+from ui.base import BaseCase
 from ui.locators import basic_locators
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By

@@ -2,6 +2,7 @@ import logging
 
 from api.client import ApiClient
 from ui.fixtures import *
+from ui.test_login import LoginPage
 
 
 def pytest_addoption(parser):
@@ -82,7 +83,27 @@ def logger(temp_dir, config):
 
 
 @pytest.fixture(scope='session')
-def api_client(config, credentials):
+def credentials():
+    with open('/Users/ki.soldatov/drivers/creds', 'r') as f:
+        user = f.readline().strip()
+        password = f.readline().strip()
+
+    return user, password
+
+
+@pytest.fixture(scope='session')
+def cookies(credentials, config):
+    driver = get_driver(config['browser'])
+    driver.get(config['url'])
+    login_page = LoginPage(driver)
+    login_page.login(*credentials)
+
+    cookies = driver.get_cookies()
+    driver.quit()
+    return cookies
+
+
+@pytest.fixture(scope="function")
+def api_client(config, credentials) -> ApiClient:
     api_client = ApiClient(config['url'], *credentials)
     return api_client
-

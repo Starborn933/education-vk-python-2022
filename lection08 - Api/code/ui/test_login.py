@@ -4,7 +4,6 @@ import pytest
 from _pytest.fixtures import FixtureRequest
 from selenium.webdriver.common.by import By
 
-from ui.fixtures import get_driver
 from ui.pages.base_page import BasePage
 
 
@@ -25,28 +24,6 @@ class BaseCase:
 
             self.driver.refresh()
             self.main_page = MainPage(driver)
-
-
-@pytest.fixture(scope='session')
-def credentials():
-    with open('/Users/ki.soldatov/drivers/creds', 'r') as f:
-        user = f.readline().strip()
-        password = f.readline().strip()
-
-    return user, password
-
-
-@pytest.fixture(scope='session')
-def cookies(credentials, config):
-    driver = get_driver(config['browser'])
-    driver.get(config['url'])
-    login_page = LoginPage(driver)
-    login_page.login(*credentials)
-
-    cookies = driver.get_cookies()
-    driver.quit()
-    return cookies
-
 
 class LoginPage(BasePage):
     url = 'https://education.vk.company/'
@@ -84,13 +61,3 @@ class TestLK(BaseCase):
 
     def test_lk2(self):
         time.sleep(3)
-
-
-class TestApi:
-    @pytest.fixture(scope='class', autouse=True)
-    def setup(self, api_client):
-        api_client.post_login()
-
-    def test(self, api_client):
-        expected_url = api_client.session.get(url='https://education.vk.company/profile/k.soldatov/').url
-        assert expected_url == 'https://education.vk.company/profile/k.soldatov/'
