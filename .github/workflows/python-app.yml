@@ -37,7 +37,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pytest ${{ steps.extract_branch.outputs.branch }}
+        pytest ${{ steps.extract_branch.outputs.branch }} -n 2
   MySQLHomework:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/homework6'
@@ -74,4 +74,4 @@ jobs:
         done
     - name: Test with pytest
       run: |
-        pytest ${{ steps.extract_branch.outputs.branch }}
+        pytest ${{ steps.extract_branch.outputs.branch }} -n 2
