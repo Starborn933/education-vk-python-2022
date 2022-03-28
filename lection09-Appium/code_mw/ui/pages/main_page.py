@@ -7,6 +7,15 @@ import allure
 class MainPage(BasePage):
     locators = MainPageLocators()
 
+    def click_on_search_button(self):
+        pass
+
+    def open_menu_button(self):
+        pass
+
+    def open_watchlist(self):
+        pass
+
 
 class MainPageMW(MainPage):
     locators = MainPagePageMWLocators()

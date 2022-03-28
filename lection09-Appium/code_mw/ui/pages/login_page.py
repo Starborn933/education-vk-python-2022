@@ -20,4 +20,10 @@ class LoginPage(BasePage):
 
 class LoginPageMW(LoginPage):
     locators = LoginPageMWLocators()
+    login_url = "https://en.m.wikipedia.org/w/index.php?title=Special:UserLogin&returnto=Main+Page"
+
+    @allure.step("Авторизовываемся")
+    def login(self, login="testusername1090", password="11qazert"):
+        super(LoginPageMW, self).login()
+
 

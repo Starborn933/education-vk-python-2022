@@ -1,7 +1,7 @@
 import logging
 
 import allure
-from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
+from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -27,6 +27,7 @@ class BasePage(object):
         self.driver = driver
         self.config = config
         self.url = self.config['url']
+        self.device = self.config['device_os']
 
         logger.info(f'{self.__class__.__name__} page is opening...')
         assert self.is_opened()

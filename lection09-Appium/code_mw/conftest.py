@@ -1,6 +1,7 @@
 import logging
 import sys
 import allure
+from api.wikipedia import WikipediaApi
 
 from ui.fixtures import *
 
@@ -8,15 +9,22 @@ from ui.fixtures import *
 def pytest_addoption(parser):
     parser.addoption('--browser', default='chrome')
     parser.addoption('--url', default='https://en.wikipedia.org/')
+    parser.addoption('--os', default='web')
     parser.addoption('--debug_log', action='store_true')
 
 
 @pytest.fixture(scope='session')
 def config(request):
     browser = request.config.getoption('--browser')
-    url = request.config.getoption('--url')
+    device_os = request.config.getoption('--os')
+    if device_os == 'mw':
+        url = 'https://en.m.wikipedia.org/'
+    elif device_os == 'web':
+        url = 'https://en.wikipedia.org/'
+    else:
+        url = request.config.getoption('--url')
     debug_log = request.config.getoption('--debug_log')
-    return {'url': url, 'browser': browser, 'debug_log': debug_log}
+    return {'url': url, 'browser': browser, 'device_os': device_os, 'debug_log': debug_log}
 
 
 @pytest.fixture(scope='session')
@@ -25,6 +33,10 @@ def repo_root():
 
 
 def pytest_configure(config):
+    config.addinivalue_line(
+        "markers", "skip_platform: skip test for necessary platform ",
+    )
+
     if sys.platform.startswith('win'):
         base_test_dir = 'C:\\tests'
     else:
@@ -34,6 +46,11 @@ def pytest_configure(config):
         if os.path.exists(base_test_dir):
             shutil.rmtree(base_test_dir)
         os.makedirs(base_test_dir)
+
+        if WikipediaApi().send_request_delete_watchlist() == 200:
+            print("===========Watchlist was cleared===========\n")
+        else:
+            print("===========Watchlist WAS NOT cleared===========\n")
 
     # save to config for all workers
     config.base_test_dir = base_test_dir
@@ -72,3 +89,8 @@ def logger(test_dir, config):
         allure.attach(f.read(), 'test.log', attachment_type=allure.attachment_type.TEXT)
 
 
+@pytest.fixture(autouse=True)
+def skip_by_platform(request, config):
+    if request.node.get_closest_marker('skip_platform'):
+        if request.node.get_closest_marker('skip_platform').args[0] == config['device_os']:
+            pytest.skip('skipped on this platform: {}'.format(config['device_os']))

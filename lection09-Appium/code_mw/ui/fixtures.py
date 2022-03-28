@@ -11,6 +11,7 @@ from ui.pages.search_page import SearchPage
 from ui.pages.title_page import TitlePage
 from ui.pages.title_list_page import TitleListPage
 from ui import pages
+from ui.capability import capability_select
 
 from webdriver_manager.chrome import ChromeDriverManager
 
@@ -19,12 +20,63 @@ class UnsupportedBrowserType(Exception):
     pass
 
 
-def get_driver(browser_name):
+@pytest.fixture
+def base_page(driver, config):
+    return BasePage(driver=driver, config=config)
+
+
+@pytest.fixture
+def login_page(driver, config):
+    page = get_page(config['device_os'], 'LoginPage')
+    return page(driver=driver, config=config)
+
+
+@pytest.fixture
+def main_page(driver, config):
+    page = get_page(config['device_os'], 'MainPage')
+    return page(driver=driver, config=config)
+
+
+@pytest.fixture
+def search_page(driver, config):
+    page = get_page(config['device_os'], 'SearchPage')
+    return page(driver=driver, config=config)
+
+
+@pytest.fixture
+def title_page(driver, config):
+    page = get_page(config['device_os'], 'TitlePage')
+    return page(driver=driver, config=config)
+
+
+@pytest.fixture
+def title_list_page(driver, config):
+    page = get_page(config['device_os'], 'TitleListPage')
+    return page(driver=driver, config=config)
+
+
+def get_page(device, page_class):
+    if device == 'mw':
+        page_class += "MW"
+    page = getattr(pages, page_class, None)
+    if page is None:
+        raise Exception(f'No such page {page_class}')
+    return page
+
+
+def get_driver(browser_name, device_os):
     manager = ChromeDriverManager(version='latest')
-    if browser_name == 'chrome':
-        browser = webdriver.Chrome(executable_path=manager.install())
+    if device_os == 'web':
+        if browser_name == 'chrome':
+            browser = webdriver.Chrome(executable_path=manager.install(),
+                                       options=capability_select(device_os))
+        else:
+            raise UnsupportedBrowserType(f' Unsupported browser {browser_name}')
+    elif device_os == 'mw':
+        browser = webdriver.Chrome(executable_path=manager.install(),
+                                   options=capability_select(device_os))
     else:
-        raise UnsupportedBrowserType(f' Unsupported browser {browser_name}')
+        raise UnsupportedBrowserType(f' Unsupported device_os type {device_os}')
     return browser
 
 
@@ -32,7 +84,8 @@ def get_driver(browser_name):
 def driver(config, test_dir):
     url = config['url']
     browser_name = config['browser']
-    browser = get_driver(browser_name)
+    device_os = config['device_os']
+    browser = get_driver(browser_name, device_os)
     browser.get(url)
     yield browser
     browser.quit()
