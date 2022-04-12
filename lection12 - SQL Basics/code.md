@@ -6,7 +6,7 @@
 
 ### Запуск бд MySql в контейнере docker
 ```shell script
-docker run --name <name> -e MYSQL_ROOT_PASSWORD=<password> -p 3306 -d mysql:8.0
+docker run --name <name> -p 3306:3306 -e MYSQL_ROOT_PASSWORD=<password> -d mysql:8.0
 ```
 Если образ еще не скачан, то docker автоматически сначала сделает pull из репозитория, а потом запустит.
 
@@ -84,9 +84,9 @@ EXPLAIN ANALYZE SELECT * FROM banner as b JOIN events as e ON (b.id = e.banner_i
 ### Создание и загрузка дампа с данными:
 Для создания дампа используется утилита mysqldump.
 ```shell script
-mysqldump -u root -h 127.0.0.1 -P32768 -p target banner > /tmp/banner.sql
+mysqldump -u root -h 127.0.0.1 -P3306 -p target banner > /tmp/banner.sql
 ```
 Загрузка дампа в БД:
 ```shell script
-mysql -u root -h 127.0.0.1 -P32768 -p target < /tmp/banner.sql
+mysql -u root -h 127.0.0.1 -P3306 -p target < /tmp/banner.sql
 ```
