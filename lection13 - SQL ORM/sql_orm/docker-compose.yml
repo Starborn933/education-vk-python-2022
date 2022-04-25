@@ -1,0 +1,27 @@
+version: '2.1'
+
+services:
+  percona:
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+    image: "percona:latest"
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"-uroot", "-ppass", "ping", "-h", "127.0.0.1" ]
+      timeout: 1s
+      retries: 30
+
+  tests:
+    image: "python_all:latest"
+    tty: true
+    volumes:
+      - "./:/code"
+      - "./alluredir:/tmp/alluredir"
+    entrypoint: bash /code/start_tests.sh
+    environment:
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=pass
+      - MYSQL_HOST=percona
+      - MYSQL_PORT=3306
+    depends_on:
+      percona:
+        condition: service_healthy

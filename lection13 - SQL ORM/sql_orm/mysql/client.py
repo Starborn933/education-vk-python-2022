@@ -1,3 +1,5 @@
+import os
+
 import sqlalchemy
 from sqlalchemy import inspect
 from sqlalchemy.orm import sessionmaker
@@ -6,10 +8,14 @@ from models.models import Base
 class MysqlClient:
 
     def __init__(self, db_name, user, password):
-        self.user = 'root'
-        self.port = 3306
-        self.password = '0000'
-        self.host = '127.0.0.1'
+        # self.user = 'root'
+        self.user = os.environ['MYSQL_USER']
+        # self.port = 3306
+        self.port = os.environ['MYSQL_PORT']
+        # self.password = '0000'
+        self.password = os.environ['MYSQL_PASSWORD']
+        # self.host = '127.0.0.1'
+        self.host = os.environ['MYSQL_HOST']
         self.db_name = db_name
 
         self.connection = None
