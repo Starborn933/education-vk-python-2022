@@ -1,0 +1,8 @@
+- scm:
+    name: qa-python-scm
+    scm:
+      - git:
+          url: https://github.com/onimocity/education-vk-python-2022-jenkins.git
+          basedir: .
+          branches:
+            - '$BRANCH'

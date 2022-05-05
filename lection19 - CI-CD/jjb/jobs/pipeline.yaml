@@ -1,0 +1,18 @@
+- job:
+    name: test-qa-pipeline-jjb
+    description: "JJB Project, Pipeline\n"
+    project-type: pipeline
+
+    pipeline-scm:
+      scm:
+        - git:
+            url: https://github.com/onimocity/education-vk-python-2022-jenkins.git
+      script-path: "simple.groovy"
+
+    wrappers:
+      - timestamps
+      - workspace-cleanup
+
+    triggers:
+      - pollscm:
+          cron: '* * * * *'
