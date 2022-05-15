@@ -208,6 +208,11 @@ DELETE http://<APP_HOST>:<APP_PORT>/api/user/<username>
 Формат запроса
 ```http request
 PUT http://<APP_HOST>:<APP_PORT>/api/user/<username>/change-password
+Content-Type: application/json
+Body:
+{
+    "password": "<new password>"
+}
 ```
 * В случае успеха у пользователя меняется пароль;
 * Новый пароль не может совпадать с паролем из БД.
